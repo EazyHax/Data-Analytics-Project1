@@ -96,11 +96,11 @@ total_quantity,
 total_products
 lifespan,
 -- Compuate average order value (AVO)
-CASE WHEN total_sales = 0 THEN 0
-	 ELSE total_sales / total_orders
+CASE WHEN total_sales = 0 THEN 0 
+     ELSE ROUND(CAST(total_sales AS FLOAT)/ total_orders, 2)
 END AS avg_order_value,
 -- Compuate average monthly spend
 CASE WHEN lifespan = 0 THEN total_sales
-     ELSE total_sales / lifespan
+     ELSE ROUND(CAST(total_sales AS FLOAT)/ lifespan, 2)
 END AS avg_monthly_spend
 FROM customer_aggregation
