@@ -66,7 +66,11 @@ SELECT
 	COUNT(DISTINCT customer_key) AS total_customers,
     SUM(sales_amount) AS total_sales,
     SUM(quantity) AS total_quantity,
-	ROUND(AVG(CAST(sales_amount AS FLOAT) / NULLIF(quantity, 0)),1) AS avg_selling_price
+    CASE 
+	WHEN quantity = 0 THEN 0
+	WHEN quantity IS NULL THEN 0
+	ELSE AVG(CAST(sales_amount AS FLOAT) / quantity) 
+    END AS avg_selling
 FROM base_query
 
 GROUP BY
@@ -102,13 +106,13 @@ SELECT
 	-- Average Order Revenue (AOR)
 	CASE 
 		WHEN total_orders = 0 THEN 0
-		ELSE total_sales / total_orders
+		ELSE ROUND(CAST(total_sales AS FLOAT) / total_orders, 2) 
 	END AS avg_order_revenue,
 
 	-- Average Monthly Revenue
 	CASE
 		WHEN lifespan = 0 THEN total_sales
-		ELSE total_sales / lifespan
+		ELSE ROUND(CAST(total_sales AS FLOAT)/ lifespan, 2) 
 	END AS avg_monthly_revenue
 
 FROM product_aggregations 
